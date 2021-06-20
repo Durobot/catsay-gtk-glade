@@ -30,6 +30,8 @@ fn build_ui(app: &gtk::Application)
     // Inputs
     let message_input: gtk::Entry = builder
         .get_object("message_input").unwrap();
+    let is_dead_switch: gtk::Switch = builder
+        .get_object("is_dead_switch").unwrap();
     // Submit button
     let button: gtk::Button = builder
         .get_object("generate_btn").unwrap();
@@ -49,6 +51,11 @@ fn build_ui(app: &gtk::Application)
     button.connect_clicked(move |_| // help: to force the closure to take ownership of `message_input`
     {                               //        (and any other referenced variables), use the `move` keyword
         message_output.set_text(&format!("{}\n   \\\n     \\", message_input.get_text().as_str()));
+        let is_dead = is_dead_switch.get_active();
+        if is_dead
+        { image_output.set_from_file("./images/cat_dead.png"); }
+        else
+        { image_output.set_from_file("./images/cat.png"); }
         //image_output_clone.show();
         image_output.show();
     });
