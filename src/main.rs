@@ -26,5 +26,30 @@ fn build_ui(app: &gtk::Application)
     // - help: try using a variant of the expected enum: `Some(app)`
     //window.set_application(app);
     window.set_application(Some(app)); // Tell the Window which application object it belongs to
+
+    // Inputs
+    let message_input: gtk::Entry = builder
+        .get_object("message_input").unwrap();
+    // Submit button
+    let button: gtk::Button = builder
+        .get_object("generate_btn").unwrap();
+    // Outputs
+    let message_output: gtk::Label = builder
+        .get_object("message_output").unwrap();
+    let image_output: gtk::Image = builder
+        .get_object("image_output").unwrap();
+    let image_output_clone = image_output.clone(); // because Gtk-rs is a wrapper around the C GTK library, doing
+                                                   // a Rust clone on an Gtk-rs object only copies the pointer
+    //button.connect_clicked(|_| // error[E0373]: closure may outlive the current function, but it borrows `message_input`,
+                                 // which is owned by the current function
+    button.connect_clicked(move |_| // help: to force the closure to take ownership of `message_input`
+    {                               //        (and any other referenced variables), use the `move` keyword
+        message_output.set_text(&format!("{}\n   \\\n     \\", message_input.get_text().as_str()));
+        //image_output_clone.show();
+        image_output.show();
+    });
     window.show_all();
+    // We want the image to be initially hidden, which is why we call hide() AFTER show_all()
+    //image_output.hide(); // error[E0382]: borrow of moved value: `image_output` (i.e. after the closure above with move modifier)
+    image_output_clone.hide();
 }
