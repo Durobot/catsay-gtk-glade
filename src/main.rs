@@ -40,6 +40,10 @@ fn build_ui(app: &gtk::Application)
         .get_object("image_output").unwrap();
     let image_output_clone = image_output.clone(); // because Gtk-rs is a wrapper around the C GTK library, doing
                                                    // a Rust clone on an Gtk-rs object only copies the pointer
+    // We are not cloning message_input and message_output simply because we don’t need to use them after we define
+    // the callback function. If we did need to use them after moving them into the callback, we would clone them just like
+    // we did for image_output.
+
     //button.connect_clicked(|_| // error[E0373]: closure may outlive the current function, but it borrows `message_input`,
                                  // which is owned by the current function
     button.connect_clicked(move |_| // help: to force the closure to take ownership of `message_input`
